@@ -1,0 +1,4 @@
+openai==1.2.3
+pandas==1.5.2
+pymongo==4.3.3
+python-dotenv==1.0.0
