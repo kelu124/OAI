@@ -1,4 +1,4 @@
-from .basics import *
+from OAI.basics import *
 
 import openai 
 from dotenv import dotenv_values
@@ -97,31 +97,42 @@ class askFCT():
 
 
     def askFct(self,CONTEXT,Q,functions,modelGPT=GPT_MODEL,ow=False):
+
         messages = []
         messages.append({"role": "system", "content": "Don't make assumptions about what values to plug into functions. Ask for clarification if a user request is ambiguous.\n"+CONTEXT})
         messages.append({"role": "user", "content": Q})
+        
+        messages, summary = self.askFtcEngine(messages,functions,modelGPT=GPT_MODEL,ow=False)
+        if "content" in summary.keys():
+            ANSWER = summary["content"]
+            if (not ANSWER) and ("message" in summary.keys()): 
+                ANSWER = summary["message"]
+        elif "choices" in summary.keys():
+            ANSWER = summary["choices"]
+        return messages, ANSWER
 
+
+    def askFtcEngine(self,messages,functions,modelGPT=GPT_MODEL,ow=False):
         MSG =  ""
         for msg in messages:
-            MSG += msg["role"]+": "+msg["content"]+"\n\n=========\n\n"
+            MSG += str(msg["role"])+": "+str(msg["content"])+"\n\n=========\n\n"
         MSG += "\n\n=========\nFUNCTION\n=========\n\n"+ str(functions)
         ID =hashme(MSG)
 
         PATH = GOTOCACHE + ID
         if ow:
             # Si on réécrit
+            
+
             chat_response = self.chat_completion_request(
                 messages, functions, model=modelGPT
             )
-            try:
-                summary = chat_response.json()["choices"][0]["message"]
-            except:
-                print(chat_response.json())
+            summary = chat_response.json()#["choices"][0]["message"]
             svt(PATH,json.dumps(summary))
             NOW = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            self.DB.delete_many({"ID":ID})
             LOG = {"app":self.NAME,"query":MSG, "ID":ID, "answer":summary, "when":NOW}
             self.DB.insert_one(LOG)
-
         else:
             CHECK_ONLINE = self.DB.find_one({"ID": ID})
             if CHECK_ONLINE:
@@ -136,7 +147,7 @@ class askFCT():
                     chat_response = self.chat_completion_request(
                         messages, functions, model=modelGPT
                     )
-                    summary = chat_response.json()["choices"][0]["message"]
+                    summary = chat_response.json()#["choices"][0]["message"]
 
                     svt(PATH,json.dumps(summary))
                 else:
@@ -144,7 +155,15 @@ class askFCT():
                 # On ajoute le résumé
                 NOW = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 LOG = {"app":self.NAME,"query":MSG, "ID":ID, "answer":summary, "when":NOW}
+                self.DB.delete_many({"ID":ID})
+                LOG = {"app":self.NAME,"query":MSG, "ID":ID, "answer":summary, "when":NOW}
                 self.DB.insert_one(LOG)
 
-        
-        return summary
+        if "content" in summary.keys():
+            messages.append(summary)
+        if "choices" in summary.keys():
+            summary = summary["choices"][0]["message"]
+            messages.append(summary)
+
+
+        return messages,summary

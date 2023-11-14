@@ -84,18 +84,22 @@ class Helper():
         STR = "Context: "+CONTEXT + "\n\n=========\n\nQuestion: "+ Q + "\n\n=========\n\nVersion: " + v
         ID = hashme(STR.encode('utf-8'))
         PATH = GOTOCACHE + ID
-
+        #print(PATH)
         if ow:
             # Si on réécrit
             summary = self.ask_GPT(CONTEXT, Q, v)
-            svt(PATH,summary)
+
             NOW = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            #print("saving after overwrite")
+            self.DB.delete_many({"ID":ID})
             LOG = {"app":self.NAME,"query":STR, "ID":ID, "answer":summary, "when":NOW}
             self.DB.insert_one(LOG)
-
+            svt(PATH,summary)
+            log = "OW"
         else:
             CHECK_ONLINE = self.DB.find_one({"ID": ID})
             if CHECK_ONLINE:
+                log = "Found cached online"
                 summary = CHECK_ONLINE["answer"]
                 # Si pas en local on sauve quand même
                 if not os.path.exists(PATH):
@@ -104,12 +108,15 @@ class Helper():
                 # Rien en ligne
                 # On check en local
                 if not os.path.exists(PATH):
+                    log = "loading from local file"
                     summary = self.ask_GPT(CONTEXT, Q, v)
                     svt(PATH,summary)
                 else:
+                    log = "Found cached locally"
                     summary = ldt(PATH)
                 # On ajoute le résumé
                 NOW = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                self.DB.delete_many({"ID":ID})
                 LOG = {"app":self.NAME,"query":STR, "ID":ID, "answer":summary, "when":NOW}
                 self.DB.insert_one(LOG)
         
