@@ -1,5 +1,0 @@
-#Key for OAI
-OAI = xx
-DB = "mongodbXX"
-PWD = "xx"
-CACHE = /home/you/llmcache/ 
