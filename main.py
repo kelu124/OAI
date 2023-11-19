@@ -1,9 +1,28 @@
 from fastapi import FastAPI
 import os
-
+from pydantic import BaseModel
+import OAI
 
 app = FastAPI()
 is_prod = os.environ.get('IS_HEROKU', None)
+
+class Request(BaseModel):
+    context: str = "What is the size of the sun"
+    question: str = "answer with the size in km"
+    model: str = "gpt-3.5-turbo-1106"
+    token: str = "TOKEN"
+    overwrite: bool = False
+
+@app.post("/ask/")
+async def ask(itemR: Request):
+
+    if itemR.token == os.environ.get('TOKEN'):
+        h = OAI.Helper("fastapi","./cache")
+        print("OVERWRITE",itemR.overwrite)
+        ans = h.ask(itemR.context,itemR.question,v=itemR.model,ow=itemR.overwrite)
+    else:
+        ans = "Incorrect token "+str(os.environ.get('TOKEN'))
+    return {"answer":ans}
 
 
 @app.get("/")
