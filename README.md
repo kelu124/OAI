@@ -1,13 +1,6 @@
 # OAI
 
-A python module that allows user to cache Q/A to OpenAI API.
-
-Install?
-
-`pip install https://github.com/kelu124/OAI/archive/master.zip`
-
-__Work in progress__
-
+App
 
 
 # License
