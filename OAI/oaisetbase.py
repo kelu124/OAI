@@ -1,17 +1,7 @@
 from dotenv import dotenv_values
-import os
+import os, hashlib
 import openai
-import time, json
-
-import pandas as pd
-import glob
-from dotenv import dotenv_values
-import os
-import openai
-from openai import OpenAI
-import time 
-import hashlib
-import datetime
+from openai import OpenAI 
 from pymongo import MongoClient
 
 is_prod = os.environ.get('IS_HEROKU', None)

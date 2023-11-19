@@ -1,26 +1,10 @@
-from OAI.basics import *
 from OAI.oaisetbase import APIBase, svt, ldt, hashme
 
-import openai 
-from dotenv import dotenv_values
-import json
-import requests
+import os, openai, datetime
+import requests, json
+
 from tenacity import retry, wait_random_exponential, stop_after_attempt
 from termcolor import colored
-from dotenv import dotenv_values
-import os
-import openai
-import time 
-import pandas as pd
-import glob
-from dotenv import dotenv_values
-import os
-import openai
-import time 
-import hashlib
-import datetime
-from pymongo import MongoClient
-
 
 
 GPT_MODEL = "gpt-3.5-turbo-1106"
@@ -77,7 +61,7 @@ class askFCT(APIBase):
         messages.append({"role": "system", "content": "Don't make assumptions about what values to plug into functions. Ask for clarification if a user request is ambiguous.\n"+CONTEXT})
         messages.append({"role": "user", "content": Q})
         
-        messages, summary = self.askFtcEngine(messages,functions,modelGPT=GPT_MODEL,ow=False)
+        messages, summary = self.askFtcEngine(messages,functions,modelGPT=modelGPT,ow=ow)
         if "content" in summary.keys():
             ANSWER = summary["content"]
             if (not ANSWER) and ("message" in summary.keys()): 

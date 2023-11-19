@@ -1,21 +1,6 @@
-from dotenv import dotenv_values
-import os
-import openai
-
 from OAI.oaisetbase import APIBase, svt, ldt, hashme
-from OAI.oaisetbase import APIBase
-
-import time, json
-
-import pandas as pd
-import glob
-
-
-from openai import OpenAI
-import time 
-
 import datetime
-from pymongo import MongoClient
+import os, json
 
 
 is_prod = os.environ.get('IS_HEROKU', None)
@@ -59,8 +44,7 @@ class Helper(APIBase):
             svt(PATH,summary) 
         else:
             CHECK_ONLINE = self.DB.find_one({"ID": ID})
-            if CHECK_ONLINE:
-                log = "Found cached online"
+            if CHECK_ONLINE: 
                 summary = CHECK_ONLINE["answer"]
                 # Si pas en local on sauve quand même
                 if not os.path.exists(PATH):
