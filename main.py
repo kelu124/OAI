@@ -4,7 +4,7 @@ from pydantic import BaseModel
 import OAI
 
 app = FastAPI()
-is_prod = os.environ.get('IS_HEROKU', None)
+is_prod = os.environ.get('IS_HEROKU', None) 
 
 class RequestAsk(BaseModel):
     context: str = "What is the size of the sun"
