@@ -14,18 +14,8 @@ import hashlib
 import datetime
 from pymongo import MongoClient
 
-#OpenAI
-config = dotenv_values(".env")
-openai.api_key = config["OAI"]
-#Local cache
-GOTOCACHE = config["CACHE"]
-#Database
-PWD = config["PWD"]
-DB = config["DB"]
-# To log questions
-cluster = MongoClient(DB)
-db = cluster["OAI"]
-collection = db["OAI_Collection"]
+is_prod = os.environ.get('IS_HEROKU', None)
+
 
 # HELPERS
 def svt(N,c):
@@ -46,19 +36,65 @@ def hashme(STR):
 class Helper():
 
     def __init__(self, *args):
-        if not len(args):
-            self.NAME = "local"
+        if os.path.isfile(".env"): # os.environ.get('THEANSWERTOEVERYTHINGEVER')
+
+            self.config = dotenv_values(".env")
+            #OpenAI
+            openai.api_key = self.config["OAI"]
+            #Local cache
+            GOTOCACHE = self.config["CACHE"]
+            #Database
+            self.PWD = self.config["PWD"]
+            self.DBAdress = self.config["DB"]
+            # To log questions
+            self.cluster = MongoClient(self.DBAdress)
+            self.db = self.cluster["OAI"]
+            self.collection = self.db["OAI_Collection"]
+
+            if not len(args):
+                self.NAME = "local"
+            else:
+                self.NAME = args[0]
+            if len(args) <= 1:
+                self.PATH = GOTOCACHE
+            else:
+                self.PATH = args[1]
+            
+            self.DB = self.collection
+            self.CLIENT = OpenAI(
+                api_key=self.config["OAI"]
+            )
+        elif  is_prod :
+            #OpenAI
+            openai.api_key = os.environ.get('OAI')
+            #Local cache
+            GOTOCACHE = os.environ.get('CACHE')
+            #Database
+            self.PWD = os.environ.get('PWD')
+            self.DBAdress = os.environ.get('DB')
+            # To log questions
+            self.cluster = MongoClient(self.DBAdress)
+            self.db = self.cluster["OAI"]
+            self.collection = self.db["OAI_Collection"]
+
+            if not len(args):
+                self.NAME = "local"
+            else:
+                self.NAME = args[0]
+            if len(args) <= 1:
+                self.PATH = GOTOCACHE
+            else:
+                self.PATH = args[1]
+            
+            self.DB = self.collection
+            self.CLIENT = OpenAI(
+                api_key=self.config["OAI"]
+            )
         else:
-            self.NAME = args[0]
-        if len(args) <= 1:
-            self.PATH = GOTOCACHE
-        else:
-            self.PATH = args[1]
-        
-        self.DB = collection
-        self.CLIENT = OpenAI(
-            api_key=config["OAI"]
-        )
+            print("No passwords")
+
+
+
 
 
 
