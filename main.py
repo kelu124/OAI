@@ -6,7 +6,7 @@ import OAI
 app = FastAPI()
 is_prod = os.environ.get('IS_HEROKU', None)
 
-class Request(BaseModel):
+class RequestAsk(BaseModel):
     context: str = "What is the size of the sun"
     question: str = "answer with the size in km"
     model: str = "gpt-3.5-turbo-1106"
@@ -14,7 +14,7 @@ class Request(BaseModel):
     overwrite: bool = False
 
 @app.post("/ask/")
-async def ask(itemR: Request):
+async def ask(itemR: RequestAsk):
 
     if (itemR.token == os.environ.get('TOKEN')) or (not is_prod):
         h = OAI.Helper("fastapi","./cache")

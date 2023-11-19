@@ -2,8 +2,7 @@ uvicorn==0.22.0
 openapi-schema-pydantic==1.2.4
 pydantic==1.10.9
 fastapi==0.88.0
-openai==1.2.3
-pandas==1.5.2
+openai==1.2.3 
 pymongo==4.3.3
 python-dotenv==1.0.0
 git+https://github.com/kelu124/OAI
