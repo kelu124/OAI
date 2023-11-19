@@ -10,7 +10,7 @@ class RequestAsk(BaseModel):
     context: str = "What is the size of the sun"
     question: str = "answer with the size in km"
     model: str = "gpt-3.5-turbo-1106"
-    token: str = "TOKEN"
+    token: str = "TOK3N"
     overwrite: bool = False
 
 @app.post("/ask/")
