@@ -1,4 +1,5 @@
 from OAI.basics import *
+from OAI.oaisetbase import APIBase, svt, ldt, hashme
 
 import openai 
 from dotenv import dotenv_values
@@ -21,36 +22,10 @@ import datetime
 from pymongo import MongoClient
 
 
-#OpenAI
-config = dotenv_values(".env")
-openai.api_key = config["OAI"]
-#Local cache
-GOTOCACHE = config["CACHE"]
-#Database
-PWD = config["PWD"]
-DB = config["DB"]
-# To log questions
-cluster = MongoClient(DB)
-db = cluster["OAI"]
-collection = db["OAI_Collection"]
-
-
 
 GPT_MODEL = "gpt-3.5-turbo-1106"
 
-class askFCT():
-    def __init__(self, *args):
-        if not len(args):
-            self.NAME = "local"
-        else:
-            self.NAME = args[0]
-        if len(args) <= 1:
-            self.PATH = GOTOCACHE
-        else:
-            self.PATH = args[1]
-        
-        self.DB = collection
-
+class askFCT(APIBase):
 
     @retry(wait=wait_random_exponential(multiplier=1, max=40), stop=stop_after_attempt(3))
     def chat_completion_request(self,messages, functions=None, function_call=None, model=GPT_MODEL):
@@ -119,7 +94,7 @@ class askFCT():
         MSG += "\n\n=========\nFUNCTION\n=========\n\n"+ str(functions)
         ID =hashme(MSG)
 
-        PATH = GOTOCACHE + ID
+        PATH = self.GOTOCACHE + ID
         if ow:
             # Si on réécrit
             
