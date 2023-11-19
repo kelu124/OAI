@@ -76,7 +76,7 @@ class APIBase():
             
             self.DB = self.collection
             self.CLIENT = OpenAI(
-                api_key=self.config["OAI"]
+                api_key=openai.api_key
             )
         else:
             print("No passwords")
