@@ -3,24 +3,22 @@ import os
 import openai
 
 from OAI.oaisetbase import APIBase, svt, ldt, hashme
+from OAI.oaisetbase import APIBase
 
 import time, json
 
 import pandas as pd
 import glob
-from dotenv import dotenv_values
-import os
-import openai
+
+
 from openai import OpenAI
 import time 
-import hashlib
+
 import datetime
 from pymongo import MongoClient
-from OAI.oaisetbase import APIBase
+
 
 is_prod = os.environ.get('IS_HEROKU', None)
-
-
 
 
 ## Helper class
