@@ -16,12 +16,12 @@ class Request(BaseModel):
 @app.post("/ask/")
 async def ask(itemR: Request):
 
-    if itemR.token == os.environ.get('TOKEN'):
+    if (itemR.token == os.environ.get('TOKEN')) or (not is_prod):
         h = OAI.Helper("fastapi","./cache")
         print("OVERWRITE",itemR.overwrite)
         ans = h.ask(itemR.context,itemR.question,v=itemR.model,ow=itemR.overwrite)
     else:
-        ans = "Incorrect token "+str(os.environ.get('TOKEN'))
+        ans = "Incorrect token "
     return {"answer":ans}
 
 
