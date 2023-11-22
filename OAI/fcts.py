@@ -72,9 +72,9 @@ class askFCT(APIBase):
 
 
     def askFtcEngine(self,messages,functions,modelGPT=GPT_MODEL,ow=False):
-        MSG =  ""
-        for msg in messages:
-            MSG += str(msg["role"])+": "+str(msg["content"])+"\n\n=========\n\n"
+        print(messages)
+
+        MSG = json.dumps(messages)+"\n\n=========\n\n"
         MSG += "\n\n=========\nFUNCTION\n=========\n\n"+ str(functions)
         ID =hashme(MSG)
 

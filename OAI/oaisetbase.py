@@ -79,4 +79,4 @@ class APIBase():
                 api_key=openai.api_key
             )
         else:
-            print("No passwords")
+            print("No passwords -- you need to have a .env file nearby")
