@@ -52,5 +52,5 @@ default_messages = [{'role': 'system',
  {'role': 'assistant',
   'content': None,
   'function_call': {'name': 'get_current_weather',
-   'arguments': {"location":"Dublin","format":"celsius"}}},
+   'arguments': '{"location":"Dublin","format":"celsius"}'}},
  {'role': 'user', 'content': 'The city is Dublin'}]
