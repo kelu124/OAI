@@ -131,6 +131,12 @@ async def fctEngine(itemR: RequestFctEngine):
     return {"messages":msgs,"answer":answer}
 
 
+@app.get("/version/")
+async def versioned():
+    return {"v": OAI.__version__}
+
+
+
 @app.get("/")
 async def root():
     return {"message": "Hello World","is_prod":is_prod,"TestSecret":os.environ.get('CACHE')}
