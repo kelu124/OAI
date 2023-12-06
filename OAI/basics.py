@@ -27,7 +27,7 @@ class Helper(APIBase):
         return answer
 
 
-    def ask(self,CONTEXT,Q,v="gpt-3.5-turbo-16k-0613",ow=False):
+    def ask(self,CONTEXT,Q,v="gpt-3.5-turbo-16k-0613",ow=False,src="none"):
         STR = "Context: "+CONTEXT + "\n\n=========\n\nQuestion: "+ Q + "\n\n=========\n\nVersion: " + v
         ID = hashme(STR.encode('utf-8'))
         PATH = self.GOTOCACHE + ID
@@ -39,7 +39,7 @@ class Helper(APIBase):
             NOW = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             #print("saving after overwrite")
             self.DB.delete_many({"ID":ID})
-            LOG = {"app":self.NAME,"query":STR, "ID":ID, "answer":summary, "when":NOW}
+            LOG = {"app":self.NAME,"query":STR, "ID":ID, "answer":summary, "when":NOW,"from":src}
             self.DB.insert_one(LOG)
             svt(PATH,summary) 
         else:
@@ -62,7 +62,7 @@ class Helper(APIBase):
                 # On ajoute le résumé
                 NOW = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 self.DB.delete_many({"ID":ID})
-                LOG = {"app":self.NAME,"query":STR, "ID":ID, "answer":summary, "when":NOW}
+                LOG = {"app":self.NAME,"query":STR, "ID":ID, "answer":summary, "when":NOW,"from":src}
                 self.DB.insert_one(LOG)
         
         return summary

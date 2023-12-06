@@ -55,7 +55,7 @@ class askFCT(APIBase):
                 print(colored(f"function ({message['name']}): {message['content']}\n", role_to_color[message["role"]]))
 
 
-    def askFct(self,CONTEXT,Q,functions,modelGPT=GPT_MODEL,ow=False):
+    def askFct(self,CONTEXT,Q,functions,modelGPT=GPT_MODEL,ow=False,src="none"):
 
         messages = []
         messages.append({"role": "system", "content": "Don't make assumptions about what values to plug into functions. Ask for clarification if a user request is ambiguous.\n"+CONTEXT})
@@ -71,7 +71,7 @@ class askFCT(APIBase):
         return messages, ANSWER
 
 
-    def askFtcEngine(self,messages,functions,modelGPT=GPT_MODEL,ow=False):
+    def askFtcEngine(self,messages,functions,modelGPT=GPT_MODEL,ow=False,src="none"):
         print(messages)
 
         MSG = json.dumps(messages)+"\n\n=========\n\n"
@@ -90,7 +90,7 @@ class askFCT(APIBase):
             svt(PATH,json.dumps(summary))
             NOW = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             self.DB.delete_many({"ID":ID})
-            LOG = {"app":self.NAME,"query":MSG, "ID":ID, "answer":summary, "when":NOW}
+            LOG = {"app":self.NAME,"query":MSG, "ID":ID, "answer":summary, "when":NOW,"from":src}
             self.DB.insert_one(LOG)
         else:
             CHECK_ONLINE = self.DB.find_one({"ID": ID})
@@ -113,9 +113,9 @@ class askFCT(APIBase):
                     summary = json.loads(ldt(PATH))
                 # On ajoute le résumé
                 NOW = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                LOG = {"app":self.NAME,"query":MSG, "ID":ID, "answer":summary, "when":NOW}
+                LOG = {"app":self.NAME,"query":MSG, "ID":ID, "answer":summary, "when":NOW,"from":src}
                 self.DB.delete_many({"ID":ID})
-                LOG = {"app":self.NAME,"query":MSG, "ID":ID, "answer":summary, "when":NOW}
+                LOG = {"app":self.NAME,"query":MSG, "ID":ID, "answer":summary, "when":NOW,"from":src}
                 self.DB.insert_one(LOG)
 
         if "content" in summary.keys():
