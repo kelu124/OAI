@@ -74,6 +74,7 @@ class RequestAsk(BaseModel):
     model: str = "gpt-3.5-turbo-1106"
     token: str = "TOK3N"
     overwrite: bool = False
+    source: str = "api"
 
 class RequestFct(BaseModel):
     context: str = "Don't make assumptions about what values to plug into functions. Ask for clarification if a user request is ambiguous."
@@ -82,6 +83,7 @@ class RequestFct(BaseModel):
     functions : List[dict] = default_tools
     overwrite: bool = False
     token: str = "TOK3N"
+    source: str = "api"
 
 class RequestFctEngine(BaseModel):
     messages: List[dict] = default_messages
@@ -89,6 +91,7 @@ class RequestFctEngine(BaseModel):
     functions : List[dict] = app_tools.default_tools
     overwrite: bool = False
     token: str = "TOK3N"
+    source: str = "api"
 
 @app.post("/ask/")
 async def ask(itemR: RequestAsk):
@@ -96,7 +99,7 @@ async def ask(itemR: RequestAsk):
     if (itemR.token == os.environ.get('TOKEN')) or (not is_prod):
         h = OAI.Helper("fastapi","./cache")
         print("OVERWRITE",itemR.overwrite)
-        ans = h.ask(itemR.context,itemR.question,v=itemR.model,ow=itemR.overwrite)
+        ans = h.ask(itemR.context,itemR.question,v=itemR.model,ow=itemR.overwrite,src=itemR.source)
     else:
         ans = "Incorrect token "
     return {"answer":ans}
@@ -108,7 +111,7 @@ async def fct(itemR: RequestFct):
     if (itemR.token == os.environ.get('TOKEN')) or (not is_prod):
         f = OAI.askFCT("demo_fct_fastapi","./cache")
         print("OVERWRITE",itemR.overwrite)
-        messages, chat_response = f.askFct(itemR.context,itemR.question,itemR.functions,modelGPT=itemR.model,ow=itemR.overwrite)
+        messages, chat_response = f.askFct(itemR.context,itemR.question,itemR.functions,modelGPT=itemR.model,ow=itemR.overwrite,src=itemR.source)
         #ans = h.ask(itemR.context,itemR.question,v=itemR.model,ow=itemR.overwrite)
     else:
         messages = {}
@@ -120,7 +123,7 @@ async def fctEngine(itemR: RequestFctEngine):
     if (itemR.token == os.environ.get('TOKEN')) or (not is_prod):
         f = OAI.askFCT("demo_fctengine_fastapi","./cache")
         print("OVERWRITE",itemR.overwrite)
-        msgs, answer = f.askFtcEngine(itemR.messages,itemR.functions,modelGPT=itemR.model,ow=itemR.overwrite)
+        msgs, answer = f.askFtcEngine(itemR.messages,itemR.functions,modelGPT=itemR.model,ow=itemR.overwrite,src=itemR.source)
         #ans = h.ask(itemR.context,itemR.question,v=itemR.model,ow=itemR.overwrite)
     else:
         msgs = {}
