@@ -8,7 +8,9 @@ Install?
 
 __Work in progress__
 
+# Changelog
 
+* v0.0.4 provides sources for logs
 
 # License
 
