@@ -10,6 +10,7 @@ __Work in progress__
 
 # Changelog
 
+* v0.0.5 provides seed option for trying different answers with same inputs
 * v0.0.4 provides sources for logs
 
 # License

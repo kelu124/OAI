@@ -27,8 +27,10 @@ class Helper(APIBase):
         return answer
 
 
-    def ask(self,CONTEXT,Q,v="gpt-3.5-turbo-16k-0613",ow=False,src="none"):
+    def ask(self,CONTEXT,Q,v="gpt-3.5-turbo-16k-0613",ow=False,src="none",seed=""):
         STR = "Context: "+CONTEXT + "\n\n=========\n\nQuestion: "+ Q + "\n\n=========\n\nVersion: " + v
+        if len(seed): 
+            STR += "\n\n=========\n\nSeed: " + seed
         ID = hashme(STR.encode('utf-8'))
         PATH = self.GOTOCACHE + ID
         #print(PATH)

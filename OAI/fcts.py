@@ -55,13 +55,13 @@ class askFCT(APIBase):
                 print(colored(f"function ({message['name']}): {message['content']}\n", role_to_color[message["role"]]))
 
 
-    def askFct(self,CONTEXT,Q,functions,modelGPT=GPT_MODEL,ow=False,src="none"):
+    def askFct(self,CONTEXT,Q,functions,modelGPT=GPT_MODEL,ow=False,src="none",seed=""):
 
         messages = []
         messages.append({"role": "system", "content": "Don't make assumptions about what values to plug into functions. Ask for clarification if a user request is ambiguous.\n"+CONTEXT})
         messages.append({"role": "user", "content": Q})
         
-        messages, summary = self.askFtcEngine(messages,functions,modelGPT=modelGPT,ow=ow)
+        messages, summary = self.askFtcEngine(messages,functions,modelGPT=modelGPT,ow=ow,src=src,seed=seed)
         if "content" in summary.keys():
             ANSWER = summary["content"]
             if (not ANSWER) and ("message" in summary.keys()): 
@@ -71,11 +71,13 @@ class askFCT(APIBase):
         return messages, ANSWER
 
 
-    def askFtcEngine(self,messages,functions,modelGPT=GPT_MODEL,ow=False,src="none"):
+    def askFtcEngine(self,messages,functions,modelGPT=GPT_MODEL,ow=False,src="none",seed=""):
         print(messages)
 
         MSG = json.dumps(messages)+"\n\n=========\n\n"
         MSG += "\n\n=========\nFUNCTION\n=========\n\n"+ str(functions)
+        if len(seed): 
+            MSG += "\n\n=========\n\nSeed: " + seed
         ID =hashme(MSG)
 
         PATH = self.GOTOCACHE + ID
