@@ -5,14 +5,14 @@ import time
 import pandas as pd 
 from selenium import webdriver 
 from selenium.webdriver import Chrome
-from chromedriver_py import binary_path # this will get you the path variable
+#from chromedriver_py import binary_path # this will get you the path variable
 
 
 def getURLcontent(URL):
     # Define the Chrome webdriver options
     print("1/3 - Starting headless")
-    svc = webdriver.ChromeService(executable_path=binary_path)
-    print(binary_path)
+    #svc = webdriver.ChromeService(executable_path=binary_path)
+    #print(binary_path)
     options = webdriver.ChromeOptions() 
     options.add_argument("--headless") # Set the Chrome webdriver to run in headless mode for scalability
     options.add_argument("--no-sandbox")
@@ -22,7 +22,8 @@ def getURLcontent(URL):
     options.page_load_strategy = "none"
 
     # Pass the defined options objects to initialize the web driver 
-    driver = Chrome(service=svc,options=options) 
+    #driver = Chrome(service=svc,options=options) 
+    driver = Chrome(options=options) 
     # Set an implicit wait of 5 seconds to allow time for elements to appear before throwing an exception
     driver.implicitly_wait(5)
     print("2/3 - Getting URL, 10s expected" )
