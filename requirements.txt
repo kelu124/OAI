@@ -1,3 +1,4 @@
+chromedriver-py==120.0.6099.109
 anyio==3.7.1
 attrs==23.2.0
 certifi==2023.11.17
