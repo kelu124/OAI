@@ -5,6 +5,7 @@ import OAI
 import app_tools
 from typing import List
 
+from li import getURLcontent
 
 app = FastAPI()
 is_prod = os.environ.get('IS_HEROKU', None) 
@@ -77,6 +78,14 @@ class RequestAsk(BaseModel):
     source: str = "api"
     seed: str = ""
 
+class RequestLI(BaseModel):
+    url: str = "http://example.com"
+    model: str = "gpt-3.5-turbo-1106"
+    token: str = "TOK3N"
+    overwrite: bool = False
+    source: str = "api-linkedin"
+    seed: str = ""
+
 class RequestFct(BaseModel):
     context: str = "Don't make assumptions about what values to plug into functions. Ask for clarification if a user request is ambiguous."
     question: str = "What's the weather like today"
@@ -107,7 +116,25 @@ async def ask(itemR: RequestAsk):
         ans = "Incorrect token "
     return {"answer":ans}
 
-
+@app.post("/li/")
+async def linkedin(itemR: RequestLI):
+    txt  = getURLcontent(itemR.url)
+    CONTEXT = """I will give you a text so that you can help me draft a summary of this article for linkedin. Here are the instructions for this type of summaries:
+* LinkedIn Post Summaries: Create concise summaries of articles from provided URLs, each consisting of two short paragraphs, highlighting the main points.
+* Tone and Style: Maintain a friendly, slightly formal, a bit optimistic, and very slightly blasé tone, appropriate for a professional audience in the digital space.
+* Starting Summaries: Begin with a straightforward sentence summarizing the article, avoiding phrases like "Just read..." or similar.
+* Language: Summaries should be in English, regardless of the original article's language.
+* Content Focus: Provide a clear and engaging overview of the key themes of the articles.
+* Emoticons: Include an emoticon at the end of approximately 50% of the paragraphs to summarize their content.
+* Avoid Certain Phrases: Do not use phrases like "the paper reports that..." or "the author states...".
+* Hashtags: End all posts with a series of seven hashtags that summarize the content.
+"""
+    if (itemR.token == os.environ.get('TOKEN')) or (not is_prod):
+        h = OAI.Helper("fastapi","./cache") 
+        ans = h.ask(CONTEXT,txt,v=itemR.model,ow=itemR.overwrite,src=itemR.source,seed=itemR.seed)
+    else:
+        ans = "Incorrect token "
+    return {"answer":ans}
 
 @app.post("/fct/")
 async def fct(itemR: RequestFct):
