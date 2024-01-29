@@ -68,11 +68,13 @@ class askFCT(APIBase):
                 ANSWER = summary["message"]
         elif "choices" in summary.keys():
             ANSWER = summary["choices"]
+        else:
+            print(summary)
         return messages, ANSWER
 
 
     def askFtcEngine(self,messages,functions,modelGPT=GPT_MODEL,ow=False,src="none",seed=""):
-        print(messages)
+        #print(messages)
 
         MSG = json.dumps(messages)+"\n\n=========\n\n"
         MSG += "\n\n=========\nFUNCTION\n=========\n\n"+ str(functions)

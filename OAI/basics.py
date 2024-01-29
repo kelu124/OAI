@@ -2,9 +2,7 @@ from OAI.oaisetbase import APIBase, svt, ldt, hashme
 import datetime
 import os, json
 
-
 is_prod = os.environ.get('IS_HEROKU', None)
-
 
 ## Helper class
 class Helper(APIBase):

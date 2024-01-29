@@ -1,10 +1,27 @@
 from dotenv import dotenv_values
-import os, hashlib
+import os, hashlib, json
 import openai
 from openai import OpenAI 
 from pymongo import MongoClient
+import gzip
 
 is_prod = os.environ.get('IS_HEROKU', None)
+
+def downloadDB(pathout):
+    config = dotenv_values(".env")
+    DBAdress = config["DB"]
+    cluster = MongoClient(DBAdress)
+    db = cluster["OAI"]
+    DB = db["OAI_Collection"]
+    allDBItems = {}
+    allLogs = DB.find()
+    for log in list(allLogs):
+        allDBItems[log["ID"]] = log
+        allDBItems[log["ID"]]["_id"] = str(allDBItems[log["ID"]]["_id"])
+    json_bytes = json.dumps(allDBItems).encode('utf-8')           
+    with gzip.open(pathout, 'w') as fout:   
+        fout.write(json_bytes)
+    return pathout
 
 # HELPERS
 def svt(N,c):
@@ -19,6 +36,14 @@ def ldt(N):
 def hashme(STR):
     STR = str(STR)
     return str(hashlib.md5(STR.encode('utf-8')).hexdigest())
+
+def getDB(ID):
+    config = dotenv_values(".env")
+    DBAdress = config["DB"]
+    cluster = MongoClient(DBAdress)
+    db = cluster["OAI"]
+    DB = db["OAI_Collection"]
+    DB.find_one({"ID": ID})
 
 class APIBase():
 

@@ -10,7 +10,8 @@ __Work in progress__
 
 # Changelog
 
-* v0.0.5 provides seed option for trying different answers with same inputs
+* v0.0.6 provides option to download mongodb db
+* v0.0.5 provides seed option for trying different answers with same inputs. Made it less verbose. 
 * v0.0.4 provides sources for logs
 
 # License
