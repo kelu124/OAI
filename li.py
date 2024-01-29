@@ -6,7 +6,7 @@ import pandas as pd
 from selenium import webdriver 
 from selenium.webdriver import Chrome
 #from chromedriver_py import binary_path # this will get you the path variable
-
+# HEROKU: using https://github.com/heroku/heroku-buildpack-google-chrome
 
 def getURLcontent(URL):
     # Define the Chrome webdriver options
