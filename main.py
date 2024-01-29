@@ -124,8 +124,9 @@ async def linkedin(itemR: RequestLI):
 * Tone and Style: Maintain a friendly, slightly formal, a bit optimistic, and very slightly blasé tone, appropriate for a professional audience in the digital space.
 * Starting Summaries: Begin with a straightforward sentence summarizing the article, avoiding phrases like "Just read..." or similar.
 * Language: Summaries should be in English, regardless of the original article's language.
+* Length: Provide 3 paragraphs in simple english.
 * Content Focus: Provide a clear and engaging overview of the key themes of the articles.
-* Emoticons: Include an emoticon at the end of approximately 50% of the paragraphs to summarize their content.
+* Emoticons: Include a couple of emoticons in 50% of the paragraphs to summarize their content.
 * Avoid Certain Phrases: Do not use phrases like "the paper reports that..." or "the author states...".
 * Hashtags: End all posts with a series of seven hashtags that summarize the content.
 """
